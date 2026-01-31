@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/text_styles.dart';
+import '../../../../core/presentation/widgets/custom_text.dart';
 
 class HeaderWidget extends StatelessWidget {
   final String greeting;
@@ -55,15 +55,15 @@ class HeaderWidget extends StatelessWidget {
         //   ),
         // ),
         const SizedBox(height: 24),
-        Text(
+        CustomText(
           greeting,
-          style: AppTextStyles.arabicTitle,
+          styleType: CustomTextStyleType.arabicTitle,
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 8),
-        const Text(
+        const CustomText(
           'مرحباً بك في المأثورات',
-          style: AppTextStyles.arabicSubtitle,
+          styleType: CustomTextStyleType.arabicSubtitle,
           textAlign: TextAlign.center,
         ),
       ],

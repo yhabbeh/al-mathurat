@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/colors.dart';
+import '../../../../core/presentation/widgets/custom_text.dart';
 import '../../../practice/presentation/pages/practice_page.dart';
 
 class CategoryCardWidget extends StatelessWidget {
@@ -63,38 +64,37 @@ class CategoryCardWidget extends StatelessWidget {
               child: Icon(icon, color: Colors.white, size: 28),
             ),
             const SizedBox(height: 16),
-            Text(
+            CustomText(
               title,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: AppColors.primaryText,
-              ),
+              styleType: CustomTextStyleType.subHeader,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: AppColors.primaryText,
             ),
             const SizedBox(height: 4),
-            Text(
+            CustomText(
               subtitle,
-              style: const TextStyle(fontSize: 14, color: Colors.grey),
+              styleType: CustomTextStyleType.caption,
+              color: Colors.grey,
+              fontSize: 14,
             ),
             const SizedBox(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                CustomText(
                   itemCount,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  styleType: CustomTextStyleType.caption,
+                  color: Colors.grey,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
                 ),
-                Text(
+                CustomText(
                   '${(progress * 100).toInt()}% complete',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  styleType: CustomTextStyleType.caption,
+                  color: Colors.grey,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
                 ),
               ],
             ),

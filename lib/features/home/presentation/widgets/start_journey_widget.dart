@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/colors.dart';
-import '../../../../core/theme/text_styles.dart';
+import '../../../../core/presentation/widgets/custom_button.dart';
+import '../../../../core/presentation/widgets/custom_text.dart';
 import '../../../journey/presentation/pages/categories_page.dart';
 
 class StartJourneyWidget extends StatelessWidget {
@@ -38,72 +39,37 @@ class StartJourneyWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          const Text(
+          const CustomText(
             'ابدأ رحلتك الروحانية',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: AppColors.primaryText,
-            ),
+            styleType: CustomTextStyleType.body,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: AppColors.primaryText,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 12),
-          const Text(
+          const CustomText(
             'اعثر على السلام والطمأنينة من خلال الذكر اليومي والصلوات والممارسات الروحية.',
-            style: TextStyle(
-              fontSize: 14,
-              color: Color(0xFF6B7280),
-              height: 1.5,
-            ),
+            color: Color(0xFF6B7280),
             textAlign: TextAlign.center,
+            fontSize: 14,
           ),
           const SizedBox(height: 32),
-          SizedBox(
-            width: double.infinity,
-            height: 56,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CategoriesPage(),
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.orangeAction,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(28),
-                ),
-                elevation: 0,
-              ),
-              child: const Text(
-                'استكشف الفئات',
-                style: AppTextStyles.buttonText,
-              ),
-            ),
+          CustomButton(
+            text: 'استكشف الفئات',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const CategoriesPage()),
+              );
+            },
+            type: CustomButtonType.primary,
           ),
           const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            height: 56,
-            child: TextButton(
-              onPressed: () {},
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.white.withOpacity(0.6),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(28),
-                ),
-              ),
-              child: const Text(
-                'متابعة الممارسة',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.primaryText,
-                ),
-              ),
-            ),
+          CustomButton(
+            text: 'متابعة الممارسة',
+            onPressed: () {},
+            type: CustomButtonType.secondary,
           ),
         ],
       ),

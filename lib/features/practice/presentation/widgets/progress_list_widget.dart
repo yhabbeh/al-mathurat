@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/colors.dart';
+import '../../../../core/presentation/widgets/custom_text.dart';
 
 class ProgressListWidget extends StatelessWidget {
   const ProgressListWidget({super.key});
@@ -20,13 +21,11 @@ class ProgressListWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          const CustomText(
             'Your Progress',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: AppColors.primaryText,
-            ),
+            styleType: CustomTextStyleType.subHeader,
+            fontWeight: FontWeight.bold,
+            color: AppColors.primaryText,
           ),
           const SizedBox(height: 16),
           // Mock List
@@ -48,26 +47,29 @@ class ProgressListWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
         children: [
-          Text(
+          CustomText(
             number,
-            style: const TextStyle(color: Colors.grey, fontSize: 16),
+            styleType: CustomTextStyleType.body,
+            color: Colors.grey,
+            fontSize: 16,
           ),
           const SizedBox(width: 24),
-          Text(
+          CustomText(
             title,
-            style: const TextStyle(
-              color: AppColors.primaryText,
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
+            styleType: CustomTextStyleType.body,
+            color: AppColors.primaryText,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
           ),
           const Spacer(),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
+              CustomText(
                 '$current/$total',
-                style: const TextStyle(color: Colors.grey, fontSize: 14),
+                styleType: CustomTextStyleType.caption,
+                color: Colors.grey,
+                fontSize: 14,
               ),
               const SizedBox(height: 4),
               // Tiny progress bar

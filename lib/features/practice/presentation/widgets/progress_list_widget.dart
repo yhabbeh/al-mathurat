@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/presentation/widgets/custom_text.dart';
+import '../../../../core/util/localization_extension.dart';
 
 class ProgressListWidget extends StatelessWidget {
   const ProgressListWidget({super.key});
@@ -21,8 +22,8 @@ class ProgressListWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const CustomText(
-            'Your Progress',
+          CustomText(
+            context.tr.yourProgress,
             styleType: CustomTextStyleType.subHeader,
             fontWeight: FontWeight.bold,
             color: AppColors.primaryText,

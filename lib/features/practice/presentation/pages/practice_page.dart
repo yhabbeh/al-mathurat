@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/di/injection_container.dart';
+import '../../../../core/util/localization_extension.dart';
 import '../bloc/practice_bloc.dart';
 import '../widgets/audio_player_widget.dart';
 import '../widgets/practice_tabs_widget.dart';
@@ -32,9 +33,9 @@ class PracticePage extends StatelessWidget {
               onPressed: () => Navigator.pop(context),
             ),
           ),
-          title: const Text(
-            'Practice',
-            style: TextStyle(
+          title: Text(
+            context.tr.practice,
+            style: const TextStyle(
               color: AppColors.primaryText,
               fontSize: 24,
               fontWeight: FontWeight.bold,

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../../core/presentation/widgets/custom_text.dart';
+import '../../../../core/util/localization_extension.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/localization/bloc/language_bloc.dart';
 
 class HeaderWidget extends StatelessWidget {
   final String greeting;
@@ -12,23 +15,37 @@ class HeaderWidget extends StatelessWidget {
       children: [
         Align(
           alignment: Alignment.topRight,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.3),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.white.withOpacity(0.5)),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: const [
-                Text(
-                  'English',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                ),
-                SizedBox(width: 4),
-                Icon(Icons.translate, size: 16),
-              ],
+          child: GestureDetector(
+            onTap: () {
+              final currentLocale = Localizations.localeOf(context);
+              final newLocale = currentLocale.languageCode == 'en'
+                  ? const Locale('ar')
+                  : const Locale('en');
+              context.read<LanguageBloc>().add(ChangeLanguage(newLocale));
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Colors.white.withOpacity(0.5)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    Localizations.localeOf(context).languageCode == 'ar'
+                        ? 'English'
+                        : 'العربية',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  const Icon(Icons.translate, size: 16),
+                ],
+              ),
             ),
           ),
         ),
@@ -56,13 +73,13 @@ class HeaderWidget extends StatelessWidget {
         // ),
         const SizedBox(height: 24),
         CustomText(
-          greeting,
+          greeting, // This comes from BLoC, which might need localization too or be dynamic
           styleType: CustomTextStyleType.arabicTitle,
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 8),
-        const CustomText(
-          'مرحباً بك في المأثورات',
+        CustomText(
+          context.tr.welcomeMessage,
           styleType: CustomTextStyleType.arabicSubtitle,
           textAlign: TextAlign.center,
         ),

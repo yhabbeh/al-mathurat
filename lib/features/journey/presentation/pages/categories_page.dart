@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/di/injection_container.dart';
+import '../../../../core/util/localization_extension.dart';
 import '../bloc/journey_bloc.dart';
 import '../widgets/category_card_widget.dart';
 import '../widgets/focus_of_day_widget.dart';
@@ -27,9 +28,9 @@ class CategoriesPage extends StatelessWidget {
             ),
             onPressed: () => Navigator.pop(context),
           ),
-          title: const Text(
-            'الفئات',
-            style: TextStyle(
+          title: Text(
+            context.tr.categories,
+            style: const TextStyle(
               color: AppColors.primaryText,
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -45,9 +46,9 @@ class CategoriesPage extends StatelessWidget {
                 padding: const EdgeInsets.all(24.0),
                 child: Column(
                   children: [
-                    const Text(
-                      'اختر فئة لبدء ممارستك الروحية',
-                      style: TextStyle(color: Colors.grey, fontSize: 16),
+                    Text(
+                      context.tr.chooseCategory,
+                      style: const TextStyle(color: Colors.grey, fontSize: 16),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 32),

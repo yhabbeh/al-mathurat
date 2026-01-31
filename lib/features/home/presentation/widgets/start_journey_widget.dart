@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/presentation/widgets/custom_button.dart';
 import '../../../../core/presentation/widgets/custom_text.dart';
+import '../../../../core/util/localization_extension.dart';
 import '../../../journey/presentation/pages/categories_page.dart';
 
 class StartJourneyWidget extends StatelessWidget {
@@ -39,8 +40,8 @@ class StartJourneyWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          const CustomText(
-            'ابدأ رحلتك الروحانية',
+          CustomText(
+            context.tr.startJourney,
             styleType: CustomTextStyleType.body,
             fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -48,15 +49,15 @@ class StartJourneyWidget extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 12),
-          const CustomText(
-            'اعثر على السلام والطمأنينة من خلال الذكر اليومي والصلوات والممارسات الروحية.',
-            color: Color(0xFF6B7280),
+          CustomText(
+            context.tr.findPeace,
+            color: const Color(0xFF6B7280),
             textAlign: TextAlign.center,
             fontSize: 14,
           ),
           const SizedBox(height: 32),
           CustomButton(
-            text: 'استكشف الفئات',
+            text: context.tr.exploreCategories,
             onPressed: () {
               Navigator.push(
                 context,
@@ -67,7 +68,7 @@ class StartJourneyWidget extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           CustomButton(
-            text: 'متابعة الممارسة',
+            text: context.tr.continuePractice,
             onPressed: () {},
             type: CustomButtonType.secondary,
           ),

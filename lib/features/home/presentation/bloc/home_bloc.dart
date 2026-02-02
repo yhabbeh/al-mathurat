@@ -5,7 +5,7 @@ part 'home_event.dart';
 part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  HomeBloc() : super(HomeInitial()) {
+  HomeBloc() : super(const HomeState()) {
     on<LoadHomeData>(_onLoadHomeData);
   }
 
@@ -13,25 +13,29 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     LoadHomeData event,
     Emitter<HomeState> emit,
   ) async {
-    emit(HomeLoading());
+    emit(HomeState.loading());
     try {
       // Simulate network delay
       await Future.delayed(const Duration(seconds: 1));
 
       emit(
-        const HomeLoaded(
+        state.copyWith(
+          status: HomeStatus.loaded,
           greeting: 'مساء الخير',
           quote: 'أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ',
           surahName: 'سورة الرعد - آية 28',
-          prayerName: 'صلاة العصر',
-          prayerTime: '15:30',
           activityMinutes: 45,
           completedActivities: 3,
           streakDays: 5,
         ),
       );
     } catch (e) {
-      emit(const HomeError('Failed to load home data'));
+      emit(
+        state.copyWith(
+          status: HomeStatus.error,
+          errorMessage: 'Failed to load home data',
+        ),
+      );
     }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/di/injection_container.dart';
@@ -24,16 +25,19 @@ class HomePage extends StatelessWidget {
           child: SafeArea(
             child: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24.0,
-                  vertical: 16.0,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: BlocBuilder<HomeBloc, HomeState>(
                   builder: (context, state) {
-                    if (state is HomeLoading) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (state is HomeLoaded) {
-                      return Column(
+                    if (state.status == HomeStatus.error) {
+                      return Center(child: Text(state.errorMessage));
+                    }
+
+                    // Skeletonizer handles the loading state visualization automatically
+                    // based on the `enabled` flag. The state already provides dummy data
+                    // when in loading status.
+                    return Skeletonizer(
+                      enabled: state.status == HomeStatus.loading,
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           HeaderWidget(greeting: state.greeting),
@@ -45,10 +49,7 @@ class HomePage extends StatelessWidget {
                           const SizedBox(height: 32),
                           const StartJourneyWidget(),
                           const SizedBox(height: 32),
-                          PrayerTimesWidget(
-                            prayerName: state.prayerName,
-                            prayerTime: state.prayerTime,
-                          ),
+                          const PrayerTimesWidget(),
                           const SizedBox(height: 24),
                           ActivityStatsWidget(
                             activityMinutes: state.activityMinutes,
@@ -57,11 +58,8 @@ class HomePage extends StatelessWidget {
                           ),
                           const SizedBox(height: 24),
                         ],
-                      );
-                    } else if (state is HomeError) {
-                      return Center(child: Text(state.message));
-                    }
-                    return const SizedBox.shrink();
+                      ),
+                    );
                   },
                 ),
               ),

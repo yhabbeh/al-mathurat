@@ -3,7 +3,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/di/injection_container.dart' as di;
 import 'core/localization/bloc/language_bloc.dart' as core;
-import 'features/home/presentation/pages/home_page.dart';
+import 'features/home/presentation/bloc/prayer_time_bloc.dart' as core;
+
+import 'features/home/presentation/pages/flash_screen.dart';
 import 'l10n/app_localizations.dart';
 
 void main() async {
@@ -17,8 +19,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => di.sl<core.LanguageBloc>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => di.sl<core.LanguageBloc>()),
+        BlocProvider(
+          create: (_) =>
+              di.sl<core.PrayerTimeBloc>()..add(core.LoadPrayerTimes()),
+        ),
+      ],
       child: BlocBuilder<core.LanguageBloc, core.LanguageState>(
         builder: (context, state) {
           return MaterialApp(
@@ -41,7 +49,7 @@ class MyApp extends StatelessWidget {
               Locale('ar'), // Arabic
             ],
             locale: state.locale,
-            home: const HomePage(),
+            home: const FlashScreen(),
           );
         },
       ),

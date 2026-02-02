@@ -66,12 +66,6 @@ class StartJourneyWidget extends StatelessWidget {
             },
             type: CustomButtonType.primary,
           ),
-          const SizedBox(height: 16),
-          CustomButton(
-            text: context.tr.continuePractice,
-            onPressed: () {},
-            type: CustomButtonType.secondary,
-          ),
         ],
       ),
     );

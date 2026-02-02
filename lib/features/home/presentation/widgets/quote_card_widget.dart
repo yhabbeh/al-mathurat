@@ -41,7 +41,7 @@ class QuoteCardWidget extends StatelessWidget {
               height: 1.6,
               fontWeight: FontWeight.w600,
               color: AppColors.primaryText,
-              fontFamily: 'Amiri', // Assuming you might have Arabic font
+              fontFamily: 'Amiri',
             ),
             textAlign: TextAlign.center,
           ),

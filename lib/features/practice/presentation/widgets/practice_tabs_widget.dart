@@ -4,11 +4,13 @@ import '../../../../core/theme/colors.dart';
 class PracticeTabsWidget extends StatelessWidget {
   final int activeTabIndex;
   final ValueChanged<int> onTabChanged;
+  final List<String> tabs;
 
   const PracticeTabsWidget({
     super.key,
     required this.activeTabIndex,
     required this.onTabChanged,
+    required this.tabs,
   });
 
   @override
@@ -17,13 +19,14 @@ class PracticeTabsWidget extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Row(
-        children: [
-          _buildTab('سُبْحَانَ اللَّهِ', 0),
-          const SizedBox(width: 12),
-          _buildTab('الْحَمْدُ لِلَّهِ', 1),
-          const SizedBox(width: 12),
-          _buildTab('اللَّهُ أَكْبَرُ', 2),
-        ],
+        children: tabs.asMap().entries.map((entry) {
+          final index = entry.key;
+          final text = entry.value;
+          return Padding(
+            padding: EdgeInsets.only(right: index < tabs.length - 1 ? 12.0 : 0),
+            child: _buildTab(text, index),
+          );
+        }).toList(),
       ),
     );
   }

@@ -1,11 +1,14 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import '../../data/repositories/stats_local_repository.dart';
 
 part 'home_event.dart';
 part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  HomeBloc() : super(const HomeState()) {
+  final StatsLocalRepository statsRepository;
+
+  HomeBloc({required this.statsRepository}) : super(const HomeState()) {
     on<LoadHomeData>(_onLoadHomeData);
   }
 
@@ -15,18 +18,29 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   ) async {
     emit(HomeState.loading());
     try {
-      // Simulate network delay
-      await Future.delayed(const Duration(seconds: 1));
+      // Load real stats from database
+      final stats = await statsRepository.getUserStats();
+
+      // Determine greeting based on time of day
+      final hour = DateTime.now().hour;
+      String greeting;
+      if (hour < 12) {
+        greeting = 'صباح الخير';
+      } else if (hour < 18) {
+        greeting = 'مساء الخير';
+      } else {
+        greeting = 'مساء الخير';
+      }
 
       emit(
         state.copyWith(
           status: HomeStatus.loaded,
-          greeting: 'مساء الخير',
+          greeting: greeting,
           quote: 'أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ',
           surahName: 'سورة الرعد - آية 28',
-          activityMinutes: 45,
-          completedActivities: 3,
-          streakDays: 5,
+          activityMinutes: stats.totalMinutes,
+          completedActivities: stats.completedActivities,
+          streakDays: stats.currentStreak,
         ),
       );
     } catch (e) {

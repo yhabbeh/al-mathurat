@@ -51,10 +51,15 @@ class CategoriesPage extends StatelessWidget {
                       style: const TextStyle(color: Colors.grey, fontSize: 16),
                       textAlign: TextAlign.center,
                     ),
+                    BottomStatsWidget(
+                      streakDays: state.streakDays,
+                      completedSessions: state.completedSessions,
+                    ),
                     const SizedBox(height: 32),
                     // Map categories
                     ...state.categories.map(
                       (cat) => CategoryCardWidget(
+                        categoryId: cat.id,
                         title: cat.title,
                         subtitle: cat.subtitle,
                         itemCount: cat.itemCount,
@@ -66,11 +71,8 @@ class CategoriesPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const FocusOfDayWidget(),
-                    BottomStatsWidget(
-                      streakDays: state.streakDays,
-                      completedSessions: state.completedSessions,
-                    ),
+
+                    // const FocusOfDayWidget(),
                     const SizedBox(height: 24),
                   ],
                 ),

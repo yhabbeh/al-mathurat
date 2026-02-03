@@ -6,16 +6,19 @@ import '../../../../core/util/localization_extension.dart';
 import '../bloc/practice_bloc.dart';
 import '../widgets/audio_player_widget.dart';
 import '../widgets/practice_tabs_widget.dart';
-import '../widgets/circular_counter_widget.dart';
+import '../widgets/athkar_counter_widget.dart';
 import '../widgets/progress_list_widget.dart';
 
 class PracticePage extends StatelessWidget {
-  const PracticePage({super.key});
+  final String categoryId;
+
+  const PracticePage({super.key, required this.categoryId});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<PracticeBloc>()..add(LoadPracticeData()),
+      create: (_) =>
+          sl<PracticeBloc>()..add(LoadPracticeData(categoryId: categoryId)),
       child: Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
@@ -80,7 +83,7 @@ class PracticePage extends StatelessWidget {
             child: BlocBuilder<PracticeBloc, PracticeState>(
               builder: (context, state) {
                 if (state is PracticeLoaded) {
-                  return Column(
+                  return ListView(
                     children: [
                       AudioPlayerWidget(
                         isPlaying: state.isPlaying,
@@ -92,20 +95,28 @@ class PracticePage extends StatelessWidget {
                         activeTabIndex: state.activeTabIndex,
                         onTabChanged: (index) =>
                             context.read<PracticeBloc>().add(ChangeTab(index)),
+                        tabs: state.items.map((e) => e.text).toList(),
                       ),
-                      const Spacer(),
-                      CircularCounterWidget(
+                      const SizedBox(height: 30),
+                      AthkarCounterWidget(
+                        title: state.currentItem?.title,
+                        athkarText: state.label,
+                        virtueText:
+                            state.currentItem?.virtueNotification?.enabled ==
+                                true
+                            ? state.currentItem?.virtueNotification?.text
+                            : null,
                         currentCount: state.currentCount,
                         targetCount: state.targetCount,
-                        label: state.label,
-                        onIncrement: () => context.read<PracticeBloc>().add(
+                        onTap: () => context.read<PracticeBloc>().add(
                           IncrementCounter(),
                         ),
                         onReset: () =>
                             context.read<PracticeBloc>().add(ResetCounter()),
                       ),
-                      const Spacer(),
-                      const Expanded(child: ProgressListWidget()),
+                      // const Spacer(),
+                      SizedBox(height: 16),
+                      ProgressListWidget(),
                     ],
                   );
                 }

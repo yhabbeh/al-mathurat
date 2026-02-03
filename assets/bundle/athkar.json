@@ -1,0 +1,257 @@
+{
+    "version": "1.0",
+    "language": "ar",
+    "source_policy": "Only authentic adhkar (Sahih / Hasan)",
+    "categories": [
+        {
+            "id": "morning",
+            "title": "أذكار الصباح",
+            "time_range": "after_fajr_to_sunrise",
+            "items": [
+                {
+                    "id": 1,
+                    "title": "آية الكرسي",
+                    "text": "اللَّهُ لا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لا تَأْخُذُهُ سِنَةٌ وَلا نَوْمٌ لَهُ مَا فِي السَّمَوَاتِ وَمَا فِي الأَرْضِ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ وَسِعَ كُرْسِيُّهُ السَّمَوَاتِ وَالأَرْضَ وَلا يَئُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ",
+                    "repeat": 1,
+                    "source": {
+                        "book": "البخاري",
+                        "hadith_number": 2311,
+                        "grade": "صحيح"
+                    },
+                    "virtue_notification": {
+                        "enabled": true,
+                        "text": "من قالها حين يصبح أُجير من الجن حتى يمسي"
+                    }
+                },
+                {
+                    "id": 2,
+                    "title": "المعوذات",
+                    "text": "قل هو الله أحد، قل أعوذ برب الفلق، قل أعوذ برب الناس",
+                    "repeat": 3,
+                    "source": {
+                        "book": "أبو داود، الترمذي",
+                        "hadith_number": 5082,
+                        "grade": "صحيح"
+                    },
+                    "virtue_notification": {
+                        "enabled": true,
+                        "text": "تكفيك من كل شيء"
+                    }
+                },
+                {
+                    "id": 3,
+                    "title": "دعاء الصباح",
+                    "text": "أصبحنا وأصبح الملك لله والحمد لله لا إله إلا الله وحده لا شريك له، له الملك وله الحمد وهو على كل شيء قدير",
+                    "repeat": 1,
+                    "source": {
+                        "book": "مسلم",
+                        "hadith_number": 2723,
+                        "grade": "صحيح"
+                    },
+                    "virtue_notification": {
+                        "enabled": false
+                    }
+                },
+                {
+                    "id": 4,
+                    "title": "سيد الاستغفار",
+                    "text": "اللهم أنت ربي لا إله إلا أنت خلقتني وأنا عبدك وأنا على عهدك ووعدك ما استطعت، أعوذ بك من شر ما صنعت، أبوء لك بنعمتك علي وأبوء بذنبي فاغفر لي فإنه لا يغفر الذنوب إلا أنت",
+                    "repeat": 1,
+                    "source": {
+                        "book": "البخاري",
+                        "hadith_number": 6306,
+                        "grade": "صحيح"
+                    },
+                    "virtue_notification": {
+                        "enabled": true,
+                        "text": "من قالها موقنًا بها فمات من يومه دخل الجنة"
+                    }
+                },
+                {
+                    "id": 5,
+                    "title": "الرضا بالله",
+                    "text": "رضيت بالله ربًا وبالإسلام دينًا وبمحمد ﷺ نبيًا",
+                    "repeat": 3,
+                    "source": {
+                        "book": "أبو داود",
+                        "hadith_number": 5072,
+                        "grade": "صحيح"
+                    },
+                    "virtue_notification": {
+                        "enabled": true,
+                        "text": "كان حقًا على الله أن يرضيه يوم القيامة"
+                    }
+                },
+                {
+                    "id": 6,
+                    "title": "الحفظ من الضرر",
+                    "text": "بسم الله الذي لا يضر مع اسمه شيء في الأرض ولا في السماء وهو السميع العليم",
+                    "repeat": 3,
+                    "source": {
+                        "book": "أبو داود، الترمذي",
+                        "hadith_number": 5088,
+                        "grade": "صحيح"
+                    },
+                    "virtue_notification": {
+                        "enabled": true,
+                        "text": "لم يضره شيء"
+                    }
+                },
+                {
+                    "id": 7,
+                    "title": "التسبيح",
+                    "text": "سبحان الله وبحمده",
+                    "repeat": 100,
+                    "source": {
+                        "book": "مسلم",
+                        "hadith_number": 2692,
+                        "grade": "صحيح"
+                    },
+                    "virtue_notification": {
+                        "enabled": true,
+                        "text": "حُطَّت خطاياه وإن كانت مثل زبد البحر"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "evening",
+            "title": "أذكار المساء",
+            "time_range": "after_asr_to_maghrib",
+            "items": [
+                {
+                    "id": 1,
+                    "title": "دعاء المساء",
+                    "text": "أمسينا وأمسى الملك لله والحمد لله لا إله إلا الله وحده لا شريك له، له الملك وله الحمد وهو على كل شيء قدير",
+                    "repeat": 1,
+                    "source": {
+                        "book": "مسلم",
+                        "hadith_number": 2723,
+                        "grade": "صحيح"
+                    },
+                    "virtue_notification": {
+                        "enabled": false
+                    }
+                },
+                {
+                    "id": 2,
+                    "title": "الحفظ من الضرر",
+                    "text": "بسم الله الذي لا يضر مع اسمه شيء في الأرض ولا في السماء وهو السميع العليم",
+                    "repeat": 3,
+                    "source": {
+                        "book": "أبو داود",
+                        "hadith_number": 5088,
+                        "grade": "صحيح"
+                    },
+                    "virtue_notification": {
+                        "enabled": true,
+                        "text": "لم يضره شيء حتى يصبح"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "after_prayer",
+            "title": "أذكار بعد الصلاة",
+            "items": [
+                {
+                    "id": 1,
+                    "title": "التسبيح",
+                    "text": "سبحان الله",
+                    "repeat": 33,
+                    "source": {
+                        "book": "مسلم",
+                        "hadith_number": 597,
+                        "grade": "صحيح"
+                    },
+                    "virtue_notification": {
+                        "enabled": false
+                    }
+                },
+                {
+                    "id": 2,
+                    "title": "التحميد",
+                    "text": "الحمد لله",
+                    "repeat": 33,
+                    "source": {
+                        "book": "مسلم",
+                        "hadith_number": 597,
+                        "grade": "صحيح"
+                    },
+                    "virtue_notification": {
+                        "enabled": false
+                    }
+                },
+                {
+                    "id": 3,
+                    "title": "التكبير",
+                    "text": "الله أكبر",
+                    "repeat": 34,
+                    "source": {
+                        "book": "مسلم",
+                        "hadith_number": 597,
+                        "grade": "صحيح"
+                    },
+                    "virtue_notification": {
+                        "enabled": false
+                    }
+                }
+            ]
+        },
+        {
+            "id": "sleep",
+            "title": "أذكار النوم",
+            "items": [
+                {
+                    "id": 1,
+                    "title": "دعاء النوم",
+                    "text": "باسمك اللهم أموت وأحيا",
+                    "repeat": 1,
+                    "source": {
+                        "book": "البخاري",
+                        "hadith_number": 6324,
+                        "grade": "صحيح"
+                    },
+                    "virtue_notification": {
+                        "enabled": false
+                    }
+                },
+                {
+                    "id": 2,
+                    "title": "تسبيحات النوم",
+                    "text": "سبحان الله، الحمد لله، الله أكبر",
+                    "repeat": 33,
+                    "source": {
+                        "book": "البخاري، مسلم",
+                        "hadith_number": 6318,
+                        "grade": "صحيح"
+                    },
+                    "virtue_notification": {
+                        "enabled": true,
+                        "text": "خير لكما من خادم"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "wake_up",
+            "title": "أذكار الاستيقاظ",
+            "items": [
+                {
+                    "id": 1,
+                    "title": "دعاء الاستيقاظ",
+                    "text": "الحمد لله الذي أحيانا بعد ما أماتنا وإليه النشور",
+                    "repeat": 1,
+                    "source": {
+                        "book": "البخاري",
+                        "hadith_number": 6312,
+                        "grade": "صحيح"
+                    },
+                    "virtue_notification": {
+                        "enabled": false
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -1,4 +1,7 @@
-import 'package:flutter/material.dart'; // Needed for Colors/Icons values access if we hardcode them here
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -16,56 +19,97 @@ class JourneyBloc extends Bloc<JourneyEvent, JourneyState> {
   ) async {
     emit(JourneyLoading());
     try {
-      await Future.delayed(const Duration(seconds: 1)); // Simulating network
+      // Load athkar data from JSON
+      final jsonString = await rootBundle.loadString(
+        'assets/bundle/athkar.json',
+      );
+      final jsonMap = json.decode(jsonString) as Map<String, dynamic>;
+      final categoriesJson = jsonMap['categories'] as List<dynamic>;
 
-      final List<CategoryModel> mockCategories = [
-        CategoryModel(
-          id: '1',
-          title: 'أذكار الصباح',
-          subtitle: 'ابدأ يومك ببركة',
-          itemCount: '33 ذكر',
-          progress: 0.1,
-          colorValue: 0xFFF59E0B, // orange
-          iconCodePoint: Icons.wb_sunny_outlined.codePoint,
-        ),
-        CategoryModel(
-          id: '2',
-          title: 'الورد اليومي',
-          subtitle: 'حافظ على استمرارك',
-          itemCount: '5 صلوات',
-          progress: 0.8,
-          colorValue: 0xFF10B981, // green
-          iconCodePoint: Icons.check_circle_outline.codePoint,
-        ),
-        CategoryModel(
-          id: '3',
-          title: 'دعاء السفر',
-          subtitle: 'حفظك الله ورعاك',
-          itemCount: '7 أدعية',
-          progress: 0.0,
-          colorValue: 0xFF3B82F6, // blue
-          iconCodePoint: Icons.flight_takeoff.codePoint,
-        ),
-        CategoryModel(
-          id: '4',
-          title: 'أذكار المساء',
-          subtitle: 'اختم يومك بذكر',
-          itemCount: '33 ذكر',
-          progress: 0.3,
-          colorValue: 0xFF8B5CF6, // purple
-          iconCodePoint: Icons.nights_stay_outlined.codePoint,
-        ),
-      ];
+      final List<CategoryModel> categories = categoriesJson.map((categoryJson) {
+        final id = categoryJson['id'] as String;
+        final title = categoryJson['title'] as String;
+        final items = categoryJson['items'] as List<dynamic>;
+        final itemCount = items.length;
+
+        // Get category-specific styling
+        final styling = _getCategoryStyling(id);
+
+        return CategoryModel(
+          id: id,
+          title: title,
+          subtitle: styling.subtitle,
+          itemCount: '$itemCount ذكر',
+          progress: 0.0, // Progress will be loaded from database later
+          colorValue: styling.colorValue,
+          iconCodePoint: styling.iconCodePoint,
+        );
+      }).toList();
 
       emit(
         JourneyLoaded(
-          categories: mockCategories,
+          categories: categories,
           streakDays: 5,
           completedSessions: 124,
         ),
       );
     } catch (e) {
-      emit(const JourneyError('Failed to load journey data'));
+      emit(JourneyError('Failed to load journey data: $e'));
     }
   }
+
+  /// Returns styling (subtitle, color, icon) based on category ID
+  _CategoryStyling _getCategoryStyling(String categoryId) {
+    switch (categoryId) {
+      case 'morning':
+        return _CategoryStyling(
+          subtitle: 'ابدأ يومك ببركة',
+          colorValue: 0xFFF59E0B, // orange
+          iconCodePoint: Icons.wb_sunny_outlined.codePoint,
+        );
+      case 'evening':
+        return _CategoryStyling(
+          subtitle: 'اختم يومك بذكر',
+          colorValue: 0xFF8B5CF6, // purple
+          iconCodePoint: Icons.nights_stay_outlined.codePoint,
+        );
+      case 'after_prayer':
+        return _CategoryStyling(
+          subtitle: 'أذكار ما بعد الصلاة',
+          colorValue: 0xFF10B981, // green
+          iconCodePoint: Icons.check_circle_outline.codePoint,
+        );
+      case 'sleep':
+        return _CategoryStyling(
+          subtitle: 'نم على ذكر الله',
+          colorValue: 0xFF3B82F6, // blue
+          iconCodePoint: Icons.bedtime_outlined.codePoint,
+        );
+      case 'wake_up':
+        return _CategoryStyling(
+          subtitle: 'استيقظ بحمد الله',
+          colorValue: 0xFFEC4899, // pink
+          iconCodePoint: Icons.alarm.codePoint,
+        );
+      default:
+        return _CategoryStyling(
+          subtitle: '',
+          colorValue: 0xFF6B7280, // gray
+          iconCodePoint: Icons.format_quote.codePoint,
+        );
+    }
+  }
+}
+
+/// Helper class for category styling
+class _CategoryStyling {
+  final String subtitle;
+  final int colorValue;
+  final int iconCodePoint;
+
+  const _CategoryStyling({
+    required this.subtitle,
+    required this.colorValue,
+    required this.iconCodePoint,
+  });
 }

@@ -4,6 +4,7 @@ import '../../../../core/presentation/widgets/custom_text.dart';
 import '../../../practice/presentation/pages/practice_page.dart';
 
 class CategoryCardWidget extends StatelessWidget {
+  final String categoryId;
   final String title;
   final String subtitle;
   final String itemCount;
@@ -13,6 +14,7 @@ class CategoryCardWidget extends StatelessWidget {
 
   const CategoryCardWidget({
     super.key,
+    required this.categoryId,
     required this.title,
     required this.subtitle,
     required this.itemCount,
@@ -27,7 +29,9 @@ class CategoryCardWidget extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const PracticePage()),
+          MaterialPageRoute(
+            builder: (context) => PracticePage(categoryId: categoryId),
+          ),
         );
       },
       child: Container(

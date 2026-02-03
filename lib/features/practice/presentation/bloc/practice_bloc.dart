@@ -1,11 +1,18 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import '../../data/repositories/practice_repository.dart';
+import '../../data/repositories/practice_local_repository.dart';
+import '../../data/models/athkar_model.dart'; // Add this import
 
 part 'practice_event.dart';
 part 'practice_state.dart';
 
 class PracticeBloc extends Bloc<PracticeEvent, PracticeState> {
-  PracticeBloc() : super(PracticeInitial()) {
+  final PracticeRepository repository;
+  final PracticeLocalRepository localRepository;
+
+  PracticeBloc({required this.repository, required this.localRepository})
+    : super(PracticeInitial()) {
     on<LoadPracticeData>(_onLoadPracticeData);
     on<IncrementCounter>(_onIncrementCounter);
     on<ResetCounter>(_onResetCounter);
@@ -13,37 +20,85 @@ class PracticeBloc extends Bloc<PracticeEvent, PracticeState> {
     on<ChangeTab>(_onChangeTab);
   }
 
-  void _onLoadPracticeData(
+  Future<void> _onLoadPracticeData(
     LoadPracticeData event,
     Emitter<PracticeState> emit,
-  ) {
-    emit(
-      const PracticeLoaded(
-        currentCount: 0,
-        targetCount: 33,
-        label: 'سُبْحَانَ اللَّهِ',
-        isPlaying: false,
-        activeTabIndex: 0,
-      ),
-    );
+  ) async {
+    emit(PracticeLoading());
+    try {
+      final data = await repository.loadAthkarData();
+      // Find the category matching the requested categoryId
+      final category = data.categories.firstWhere(
+        (c) => c.id == event.categoryId,
+        orElse: () => data.categories.isNotEmpty
+            ? data.categories.first
+            : throw Exception('No categories found'),
+      );
+
+      final items = category.items;
+      if (items.isEmpty) throw Exception('No items in category');
+
+      final initialIndex = 0;
+      emit(
+        PracticeLoaded(
+          items: items,
+          currentItem: items[initialIndex],
+          currentCount: 0,
+          isPlaying: false,
+          activeTabIndex: initialIndex,
+        ),
+      );
+    } catch (e) {
+      // If asset loading fails, emit initial state
+      // In production, this would be logged to a monitoring service
+      emit(PracticeInitial());
+    }
   }
 
   void _onIncrementCounter(
     IncrementCounter event,
     Emitter<PracticeState> emit,
-  ) {
+  ) async {
     if (state is PracticeLoaded) {
       final currentState = state as PracticeLoaded;
-      if (currentState.currentCount < currentState.targetCount) {
-        emit(
-          currentState.copyWith(currentCount: currentState.currentCount + 1),
+      final target = currentState.targetCount;
+      final newCount = currentState.currentCount + 1;
+
+      // Save to database
+      if (currentState.currentItem != null) {
+        final isCompleted = newCount >= target;
+        await localRepository.savePracticeSession(
+          athkarId: currentState.currentItem!.text,
+          count: newCount,
+          isCompleted: isCompleted,
         );
+      }
+
+      // Check if completed and should advance to next
+      if (newCount >= target) {
+        final nextIndex = currentState.activeTabIndex + 1;
+
+        // If there's a next item, advance to it
+        if (nextIndex < currentState.items.length) {
+          emit(currentState.copyWith(currentCount: newCount));
+
+          // Small delay before advancing to show completion
+          await Future.delayed(const Duration(milliseconds: 800));
+
+          emit(
+            currentState.copyWith(
+              activeTabIndex: nextIndex,
+              currentItem: currentState.items[nextIndex],
+              currentCount: 0,
+              isPlaying: false,
+            ),
+          );
+        } else {
+          // All items completed - stay on last one showing completed state
+          emit(currentState.copyWith(currentCount: newCount));
+        }
       } else {
-        // Loop or finish? For now, just reset or stay max.
-        // Let's reset to simulate loop.
-        emit(
-          currentState.copyWith(currentCount: 1),
-        ); // Reset to 1 explicitly or 0? 1 feels better for flow
+        emit(currentState.copyWith(currentCount: newCount));
       }
     }
   }
@@ -62,36 +117,19 @@ class PracticeBloc extends Bloc<PracticeEvent, PracticeState> {
   }
 
   void _onChangeTab(ChangeTab event, Emitter<PracticeState> emit) {
-    // Switch logic
-    String newLabel;
-    int newTarget;
-
-    switch (event.tabIndex) {
-      case 0:
-        newLabel = 'سُبْحَانَ اللَّهِ';
-        newTarget = 33;
-        break;
-      case 1:
-        newLabel = 'الْحَمْدُ لِلَّهِ';
-        newTarget = 33;
-        break;
-      case 2:
-        newLabel = 'اللَّهُ أَكْبَرُ';
-        newTarget = 34; // Often 34 for takbir in sequence
-        break;
-      default:
-        newLabel = 'ذكر';
-        newTarget = 33;
+    if (state is PracticeLoaded) {
+      final currentState = state as PracticeLoaded;
+      // Ensure index is valid
+      if (event.tabIndex >= 0 && event.tabIndex < currentState.items.length) {
+        emit(
+          currentState.copyWith(
+            activeTabIndex: event.tabIndex,
+            currentItem: currentState.items[event.tabIndex],
+            currentCount: 0, // Reset count on tab change
+            isPlaying: false,
+          ),
+        );
+      }
     }
-
-    emit(
-      PracticeLoaded(
-        currentCount: 0,
-        targetCount: newTarget,
-        label: newLabel,
-        isPlaying: false,
-        activeTabIndex: event.tabIndex,
-      ),
-    );
   }
 }

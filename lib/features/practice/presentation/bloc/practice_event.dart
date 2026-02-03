@@ -7,7 +7,14 @@ abstract class PracticeEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class LoadPracticeData extends PracticeEvent {}
+class LoadPracticeData extends PracticeEvent {
+  final String categoryId;
+
+  const LoadPracticeData({required this.categoryId});
+
+  @override
+  List<Object> get props => [categoryId];
+}
 
 class IncrementCounter extends PracticeEvent {}
 

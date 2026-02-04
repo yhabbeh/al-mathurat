@@ -4,12 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import '../../../../core/database/database_helper.dart';
+import '../../../home/data/repositories/stats_local_repository.dart';
 
 part 'journey_event.dart';
 part 'journey_state.dart';
 
 class JourneyBloc extends Bloc<JourneyEvent, JourneyState> {
-  JourneyBloc() : super(JourneyInitial()) {
+  final StatsLocalRepository statsRepository;
+  final DatabaseHelper dbHelper;
+
+  JourneyBloc({required this.statsRepository, required this.dbHelper})
+    : super(JourneyInitial()) {
     on<LoadJourneyData>(_onLoadJourneyData);
   }
 
@@ -19,6 +25,9 @@ class JourneyBloc extends Bloc<JourneyEvent, JourneyState> {
   ) async {
     emit(JourneyLoading());
     try {
+      // Load user stats from database
+      final stats = await statsRepository.getUserStats();
+
       // Load athkar data from JSON
       final jsonString = await rootBundle.loadString(
         'assets/bundle/athkar.json',
@@ -26,7 +35,9 @@ class JourneyBloc extends Bloc<JourneyEvent, JourneyState> {
       final jsonMap = json.decode(jsonString) as Map<String, dynamic>;
       final categoriesJson = jsonMap['categories'] as List<dynamic>;
 
-      final List<CategoryModel> categories = categoriesJson.map((categoryJson) {
+      final List<CategoryModel> categories = [];
+
+      for (final categoryJson in categoriesJson) {
         final id = categoryJson['id'] as String;
         final title = categoryJson['title'] as String;
         final items = categoryJson['items'] as List<dynamic>;
@@ -35,22 +46,43 @@ class JourneyBloc extends Bloc<JourneyEvent, JourneyState> {
         // Get category-specific styling
         final styling = _getCategoryStyling(id);
 
-        return CategoryModel(
-          id: id,
-          title: title,
-          subtitle: styling.subtitle,
-          itemCount: '$itemCount ذكر',
-          progress: 0.0, // Progress will be loaded from database later
-          colorValue: styling.colorValue,
-          iconCodePoint: styling.iconCodePoint,
+        // Calculate today's progress for this category
+        final todayProgress = await dbHelper.getCategoryProgress(id);
+        double progressValue = 0.0;
+
+        if (todayProgress != null && itemCount > 0) {
+          // Calculate progress based on current item index and count
+          final completedItems = todayProgress.currentItemIndex;
+          final currentItemProgress =
+              todayProgress.currentCount /
+              (items[todayProgress.currentItemIndex]['repeat'] as int? ?? 1);
+          progressValue = (completedItems + currentItemProgress) / itemCount;
+
+          // If category was fully completed today
+          if (todayProgress.completionsCount > 0) {
+            progressValue = 1.0;
+          }
+        }
+
+        categories.add(
+          CategoryModel(
+            id: id,
+            title: title,
+            subtitle: styling.subtitle,
+            itemCount: '$itemCount ذكر',
+            progress: progressValue.clamp(0.0, 1.0),
+            colorValue: styling.colorValue,
+            iconCodePoint: styling.iconCodePoint,
+          ),
         );
-      }).toList();
+      }
 
       emit(
         JourneyLoaded(
           categories: categories,
-          streakDays: 5,
-          completedSessions: 124,
+          streakDays: stats.currentStreak,
+          completedSessions: stats.completedActivities,
+          activityMinutes: stats.totalMinutes,
         ),
       );
     } catch (e) {

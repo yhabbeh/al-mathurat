@@ -5,16 +5,42 @@ import '../../../../core/di/injection_container.dart';
 import '../../../../core/util/localization_extension.dart';
 import '../bloc/journey_bloc.dart';
 import '../widgets/category_card_widget.dart';
-import '../widgets/focus_of_day_widget.dart';
 import '../widgets/bottom_stats_widget.dart';
 
-class CategoriesPage extends StatelessWidget {
+class CategoriesPage extends StatefulWidget {
   const CategoriesPage({super.key});
 
   @override
+  State<CategoriesPage> createState() => _CategoriesPageState();
+}
+
+class _CategoriesPageState extends State<CategoriesPage> {
+  late JourneyBloc _bloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _bloc = sl<JourneyBloc>()..add(LoadJourneyData());
+  }
+
+  @override
+  void dispose() {
+    _bloc.close();
+    super.dispose();
+  }
+
+  Future<void> _onRefresh() async {
+    _bloc.add(LoadJourneyData());
+    // Wait for the state to change to loaded
+    await _bloc.stream.firstWhere(
+      (state) => state is JourneyLoaded || state is JourneyError,
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<JourneyBloc>()..add(LoadJourneyData()),
+    return BlocProvider.value(
+      value: _bloc,
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -42,9 +68,11 @@ class CategoriesPage extends StatelessWidget {
             if (state is JourneyLoading) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is JourneyLoaded) {
-              return SingleChildScrollView(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
+              return RefreshIndicator(
+                onRefresh: _onRefresh,
+                color: AppColors.purpleIcon,
+                child: ListView(
+                  padding: const EdgeInsets.all(24.0),
                   children: [
                     Text(
                       context.tr.chooseCategory,
@@ -54,6 +82,7 @@ class CategoriesPage extends StatelessWidget {
                     BottomStatsWidget(
                       streakDays: state.streakDays,
                       completedSessions: state.completedSessions,
+                      activityMinutes: state.activityMinutes,
                     ),
                     const SizedBox(height: 32),
                     // Map categories
@@ -71,14 +100,24 @@ class CategoriesPage extends StatelessWidget {
                         ),
                       ),
                     ),
-
-                    // const FocusOfDayWidget(),
                     const SizedBox(height: 24),
                   ],
                 ),
               );
             } else if (state is JourneyError) {
-              return Center(child: Text(state.message));
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(state.message),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () => _bloc.add(LoadJourneyData()),
+                      child: const Text('Retry'),
+                    ),
+                  ],
+                ),
+              );
             }
             return const SizedBox.shrink();
           },

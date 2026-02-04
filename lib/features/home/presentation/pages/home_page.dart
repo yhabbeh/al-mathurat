@@ -3,66 +3,93 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/di/injection_container.dart';
+import '../../../journey/presentation/bloc/journey_bloc.dart';
 import '../bloc/home_bloc.dart';
-import '../widgets/header_widget.dart';
 import '../widgets/quote_card_widget.dart';
 import '../widgets/start_journey_widget.dart';
 import '../widgets/prayer_times_widget.dart';
 import '../widgets/activity_stats_widget.dart';
+import 'surah_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<HomeBloc>()..add(LoadHomeData()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => sl<HomeBloc>()..add(LoadHomeData())),
+        BlocProvider(create: (_) => sl<JourneyBloc>()..add(LoadJourneyData())),
+      ],
       child: Scaffold(
         body: Container(
           decoration: const BoxDecoration(
             gradient: AppColors.backgroundGradient,
           ),
           child: SafeArea(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: BlocBuilder<HomeBloc, HomeState>(
-                  builder: (context, state) {
-                    if (state.status == HomeStatus.error) {
-                      return Center(child: Text(state.errorMessage));
-                    }
+            child: Builder(
+              builder: (context) {
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    // Refresh both blocs
 
-                    // Skeletonizer handles the loading state visualization automatically
-                    // based on the `enabled` flag. The state already provides dummy data
-                    // when in loading status.
-                    return Skeletonizer(
-                      enabled: state.status == HomeStatus.loading,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          HeaderWidget(greeting: state.greeting),
-                          const SizedBox(height: 32),
-                          QuoteCardWidget(
-                            quote: state.quote,
-                            surahName: state.surahName,
-                          ),
-                          const SizedBox(height: 32),
-                          const StartJourneyWidget(),
-                          const SizedBox(height: 32),
-                          const PrayerTimesWidget(),
-                          const SizedBox(height: 24),
-                          ActivityStatsWidget(
-                            activityMinutes: state.activityMinutes,
-                            completedActivities: state.completedActivities,
-                            streakDays: state.streakDays,
-                          ),
-                          const SizedBox(height: 24),
-                        ],
-                      ),
-                    );
+                    context.read<HomeBloc>().add(LoadHomeData());
+                    context.read<JourneyBloc>().add(LoadJourneyData());
                   },
-                ),
-              ),
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: BlocBuilder<HomeBloc, HomeState>(
+                        builder: (context, state) {
+                          if (state.status == HomeStatus.error) {
+                            return Center(child: Text(state.errorMessage));
+                          }
+
+                          return Skeletonizer(
+                            enabled: state.status == HomeStatus.loading,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                const SizedBox(height: 25),
+                                QuoteCardWidget(
+                                  quote: state.quote,
+                                  surahName: state.surahName,
+                                  onTap: () {
+                                    if (state.surahNumber > 0) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => SurahPage(
+                                            surahNumber: state.surahNumber,
+                                            verseNumber: state.verseNumber,
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),
+                                const SizedBox(height: 25),
+                                const StartJourneyWidget(),
+                                const SizedBox(height: 25),
+                                const PrayerTimesWidget(),
+                                const SizedBox(height: 24),
+                                ActivityStatsWidget(
+                                  streakDays: state.streakDays,
+                                  completedActivities:
+                                      state.completedActivities,
+                                  activityMinutes: state.activityMinutes,
+                                ),
+                                const SizedBox(height: 24),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         ),

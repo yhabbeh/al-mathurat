@@ -32,7 +32,7 @@ Future<void> init() async {
 
   // Blocs
   sl.registerFactory(() => HomeBloc(statsRepository: sl()));
-  sl.registerFactory(() => JourneyBloc());
+  sl.registerFactory(() => JourneyBloc(statsRepository: sl(), dbHelper: sl()));
   sl.registerFactory(
     () => PracticeBloc(repository: sl(), localRepository: sl()),
   );

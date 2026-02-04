@@ -30,3 +30,5 @@ class ChangeTab extends PracticeEvent {
   @override
   List<Object> get props => [tabIndex];
 }
+
+class SaveProgress extends PracticeEvent {}

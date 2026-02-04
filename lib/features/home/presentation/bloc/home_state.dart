@@ -7,6 +7,8 @@ class HomeState extends Equatable {
   final String greeting;
   final String quote;
   final String surahName;
+  final int surahNumber;
+  final int verseNumber;
   final int activityMinutes;
   final int completedActivities;
   final int streakDays;
@@ -17,6 +19,8 @@ class HomeState extends Equatable {
     this.greeting = '',
     this.quote = '',
     this.surahName = '',
+    this.surahNumber = 0,
+    this.verseNumber = 0,
     this.activityMinutes = 0,
     this.completedActivities = 0,
     this.streakDays = 0,
@@ -30,6 +34,8 @@ class HomeState extends Equatable {
       greeting: 'Welcome back',
       quote: 'Loading quote text for skeletonizer display...',
       surahName: 'Surah Name',
+      surahNumber: 0,
+      verseNumber: 0,
       activityMinutes: 0,
       completedActivities: 0,
       streakDays: 0,
@@ -41,6 +47,8 @@ class HomeState extends Equatable {
     String? greeting,
     String? quote,
     String? surahName,
+    int? surahNumber,
+    int? verseNumber,
     int? activityMinutes,
     int? completedActivities,
     int? streakDays,
@@ -51,6 +59,8 @@ class HomeState extends Equatable {
       greeting: greeting ?? this.greeting,
       quote: quote ?? this.quote,
       surahName: surahName ?? this.surahName,
+      surahNumber: surahNumber ?? this.surahNumber,
+      verseNumber: verseNumber ?? this.verseNumber,
       activityMinutes: activityMinutes ?? this.activityMinutes,
       completedActivities: completedActivities ?? this.completedActivities,
       streakDays: streakDays ?? this.streakDays,
@@ -64,6 +74,8 @@ class HomeState extends Equatable {
     greeting,
     quote,
     surahName,
+    surahNumber,
+    verseNumber,
     activityMinutes,
     completedActivities,
     streakDays,

@@ -10,63 +10,80 @@ class StartJourneyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: AppColors.cardSurface.withOpacity(0.4),
-        borderRadius: BorderRadius.circular(32),
-        border: Border.all(color: Colors.white.withOpacity(0.4)),
-      ),
-      child: Column(
-        children: [
-          Container(
-            width: 72,
-            height: 72,
-            decoration: BoxDecoration(
-              color: AppColors.orangeAction,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.orangeAction.withOpacity(0.4),
-                  blurRadius: 16,
-                  offset: const Offset(0, 8),
-                ),
-              ],
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const CategoriesPage()),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: AppColors.cardSurface,
+          borderRadius: BorderRadius.circular(32),
+          border: Border.all(color: Colors.white.withOpacity(0.4)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.5),
+              blurRadius: 16,
+              offset: const Offset(0, 8),
             ),
-            child: const Icon(
-              Icons.auto_awesome,
-              color: Colors.white,
-              size: 36,
+          ],
+        ),
+        child: Column(
+          children: [
+            Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                color: AppColors.orangeAction,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.orangeAction.withOpacity(0.4),
+                    blurRadius: 16,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: const Icon(
+                Icons.auto_awesome,
+                color: Colors.white,
+                size: 36,
+              ),
             ),
-          ),
-          const SizedBox(height: 24),
-          CustomText(
-            context.tr.startJourney,
-            styleType: CustomTextStyleType.body,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: AppColors.primaryText,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 12),
-          CustomText(
-            context.tr.findPeace,
-            color: const Color(0xFF6B7280),
-            textAlign: TextAlign.center,
-            fontSize: 14,
-          ),
-          const SizedBox(height: 32),
-          CustomButton(
-            text: context.tr.exploreCategories,
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const CategoriesPage()),
-              );
-            },
-            type: CustomButtonType.primary,
-          ),
-        ],
+            const SizedBox(height: 24),
+            CustomText(
+              context.tr.startJourney,
+              styleType: CustomTextStyleType.body,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: AppColors.primaryText,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 12),
+            CustomText(
+              context.tr.findPeace,
+              color: const Color(0xFF6B7280),
+              textAlign: TextAlign.center,
+              fontSize: 14,
+            ),
+            const SizedBox(height: 32),
+            // CustomButton(
+            //   text: context.tr.exploreCategories,
+            //   onPressed: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //         builder: (context) => const CategoriesPage(),
+            //       ),
+            //     );
+            //   },
+            //   type: CustomButtonType.primary,
+            // ),
+          ],
+        ),
       ),
     );
   }

@@ -30,7 +30,7 @@ class AthkarCounterWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         HapticFeedback.lightImpact();
-        onTap();
+        isCompleted ? null : onTap();
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -196,7 +196,7 @@ class AthkarCounterWidget extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(20),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   // Reset Button
                   Container(
@@ -215,8 +215,6 @@ class AthkarCounterWidget extends StatelessWidget {
                       onPressed: onReset,
                     ),
                   ),
-
-                  const SizedBox(width: 24),
 
                   // Counter Display
                   Container(
@@ -268,8 +266,6 @@ class AthkarCounterWidget extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(width: 24),
-
                   // Tap indicator
                   Container(
                     width: 48,
@@ -314,7 +310,7 @@ class AthkarCounterWidget extends StatelessWidget {
                     ),
                     SizedBox(width: 8),
                     Text(
-                      'تم الإكمال - اضغط للتالي',
+                      'تم الإكمال',
                       style: TextStyle(
                         color: Color(0xFF10B981),
                         fontWeight: FontWeight.w600,

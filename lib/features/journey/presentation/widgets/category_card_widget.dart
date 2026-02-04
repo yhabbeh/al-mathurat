@@ -1,7 +1,10 @@
+import 'package:almaathorat/core/util/localization_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/presentation/widgets/custom_text.dart';
 import '../../../practice/presentation/pages/practice_page.dart';
+import '../../presentation/bloc/journey_bloc.dart';
 
 class CategoryCardWidget extends StatelessWidget {
   final String categoryId;
@@ -26,13 +29,18 @@ class CategoryCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
+      onTap: () async {
+        await Navigator.push<bool>(
           context,
           MaterialPageRoute(
             builder: (context) => PracticePage(categoryId: categoryId),
           ),
         );
+
+        // Reload journey data when returning from practice
+        if (context.mounted) {
+          context.read<JourneyBloc>().add(LoadJourneyData());
+        }
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
@@ -94,7 +102,7 @@ class CategoryCardWidget extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                 ),
                 CustomText(
-                  '${(progress * 100).toInt()}% complete',
+                  '${(progress * 100).toInt()}% ${context.tr.completed}',
                   styleType: CustomTextStyleType.caption,
                   color: Colors.grey,
                   fontSize: 14,

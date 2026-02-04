@@ -45,18 +45,24 @@ class JourneyLoading extends JourneyState {}
 
 class JourneyLoaded extends JourneyState {
   final List<CategoryModel> categories;
-  // Simplified for now, can add Focus and Stats later if needed or hardcoded
   final int streakDays;
   final int completedSessions;
+  final int activityMinutes;
 
   const JourneyLoaded({
     required this.categories,
     required this.streakDays,
     required this.completedSessions,
+    this.activityMinutes = 0,
   });
 
   @override
-  List<Object> get props => [categories, streakDays, completedSessions];
+  List<Object> get props => [
+    categories,
+    streakDays,
+    completedSessions,
+    activityMinutes,
+  ];
 }
 
 class JourneyError extends JourneyState {

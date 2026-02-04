@@ -77,29 +77,26 @@ class ProgressListWidget extends StatelessWidget {
                 final index = entry.key;
                 final item = entry.value;
                 final isActive = index == state.activeTabIndex;
-                final isCompleted = index < state.activeTabIndex;
-                final progress = isActive
-                    ? state.currentCount / item.repeat
-                    : isCompleted
-                    ? 1.0
-                    : 0.0;
+
+                // Get this item's count from the itemsProgress map
+                final itemCount = state.getItemCount(index);
+                final isCompleted = itemCount >= item.repeat;
+                final progress = itemCount / item.repeat;
 
                 return _buildProgressItem(
                   context: context,
                   index: index + 1,
                   text: item.title ?? item.text,
-                  current: isActive
-                      ? state.currentCount
-                      : (isCompleted ? item.repeat : 0),
+                  current: itemCount, // Each item's independent count
                   total: item.repeat,
-                  progress: progress,
+                  progress: progress.clamp(0.0, 1.0),
                   isActive: isActive,
                   isCompleted: isCompleted,
                   onTap: () {
                     context.read<PracticeBloc>().add(ChangeTab(index));
                   },
                 );
-              }).toList(),
+              }),
             ],
           ),
         );

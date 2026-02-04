@@ -50,7 +50,7 @@ class _FlashScreenState extends State<FlashScreen>
       listener: (context, state) {
         if (state is PrayerTimeLoaded || state is PrayerTimeError) {
           // Add a small delay for the animation to be enjoyable if api returns too fast
-          Future.delayed(const Duration(milliseconds: 1500), () {
+          Future.delayed(const Duration(milliseconds: 100), () {
             if (mounted) {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (_) => const HomePage()),

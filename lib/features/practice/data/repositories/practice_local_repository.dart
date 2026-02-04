@@ -39,27 +39,41 @@ class PracticeLocalRepository {
     return await _dbHelper.updatePracticeSession(session);
   }
 
-  /// Track athkar progress
-  Future<void> updateAthkarProgress({
+  // ========== Per-Item Progress Methods (Independent Counters) ==========
+
+  /// Save progress for a specific item (independent counter)
+  Future<void> saveItemProgress({
     required String categoryId,
     required int itemId,
-    required int completionsCount,
+    required int currentCount,
   }) async {
-    final progress = AthkarProgress(
+    await _dbHelper.saveItemProgress(
       categoryId: categoryId,
       itemId: itemId,
-      completionsCount: completionsCount,
-      lastCompleted: DateTime.now(),
+      currentCount: currentCount,
     );
-    await _dbHelper.createOrUpdateAthkarProgress(progress);
   }
 
-  /// Get progress for specific athkar
-  Future<AthkarProgress?> getAthkarProgress(
-    String categoryId,
-    int itemId,
-  ) async {
-    return await _dbHelper.getAthkarProgress(categoryId, itemId);
+  /// Get today's count for a specific item
+  Future<int> getItemProgress(String categoryId, int itemId) async {
+    return await _dbHelper.getItemProgress(categoryId, itemId);
+  }
+
+  /// Get all items' progress for a category today (Map of itemId -> count)
+  Future<Map<int, int>> getAllItemsProgress(String categoryId) async {
+    return await _dbHelper.getAllItemsProgress(categoryId);
+  }
+
+  /// Mark category as completed and update stats
+  Future<void> markCategoryCompleted(String categoryId) async {
+    await _dbHelper.markCategoryCompleted(categoryId);
+  }
+
+  // ========== Legacy Methods ==========
+
+  /// Load current progress for a category (legacy - for compatibility)
+  Future<AthkarProgress?> loadCurrentProgress(String categoryId) async {
+    return await _dbHelper.getCategoryProgress(categoryId);
   }
 
   /// Get all athkar progress

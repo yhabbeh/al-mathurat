@@ -125,20 +125,26 @@ class UserStats extends Equatable {
   ];
 }
 
-/// Represents athkar completion progress
+/// Represents athkar completion progress (tracked per day)
 class AthkarProgress extends Equatable {
   final int? id;
   final String categoryId;
   final int itemId;
   final int completionsCount;
   final DateTime? lastCompleted;
+  final int currentCount;
+  final int currentItemIndex;
+  final String? date; // YYYY-MM-DD format for daily tracking
 
   const AthkarProgress({
     this.id,
     required this.categoryId,
-    required this.itemId,
+    this.itemId = 0,
     this.completionsCount = 0,
     this.lastCompleted,
+    this.currentCount = 0,
+    this.currentItemIndex = 0,
+    this.date,
   });
 
   Map<String, dynamic> toMap() {
@@ -148,6 +154,9 @@ class AthkarProgress extends Equatable {
       'item_id': itemId,
       'completions_count': completionsCount,
       'last_completed': lastCompleted?.toIso8601String(),
+      'current_count': currentCount,
+      'current_item_index': currentItemIndex,
+      'date': date,
     };
   }
 
@@ -160,6 +169,9 @@ class AthkarProgress extends Equatable {
       lastCompleted: map['last_completed'] != null
           ? DateTime.parse(map['last_completed'] as String)
           : null,
+      currentCount: (map['current_count'] as int?) ?? 0,
+      currentItemIndex: (map['current_item_index'] as int?) ?? 0,
+      date: map['date'] as String?,
     );
   }
 
@@ -169,6 +181,9 @@ class AthkarProgress extends Equatable {
     int? itemId,
     int? completionsCount,
     DateTime? lastCompleted,
+    int? currentCount,
+    int? currentItemIndex,
+    String? date,
   }) {
     return AthkarProgress(
       id: id ?? this.id,
@@ -176,6 +191,9 @@ class AthkarProgress extends Equatable {
       itemId: itemId ?? this.itemId,
       completionsCount: completionsCount ?? this.completionsCount,
       lastCompleted: lastCompleted ?? this.lastCompleted,
+      currentCount: currentCount ?? this.currentCount,
+      currentItemIndex: currentItemIndex ?? this.currentItemIndex,
+      date: date ?? this.date,
     );
   }
 
@@ -186,5 +204,8 @@ class AthkarProgress extends Equatable {
     itemId,
     completionsCount,
     lastCompleted,
+    currentCount,
+    currentItemIndex,
+    date,
   ];
 }

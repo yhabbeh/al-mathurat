@@ -80,25 +80,25 @@ class PrayerTimesWidget extends StatelessWidget {
                                 color: Colors.grey,
                               ),
                             ),
-                            IconButton(
-                              icon: const Icon(
-                                Icons.notification_add,
-                                size: 16,
-                                color: Colors.grey,
-                              ),
-                              onPressed: () {
-                                context.read<PrayerTimeBloc>().add(
-                                  TestNotification(),
-                                );
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      'Notification scheduled in 10 seconds',
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
+                            // IconButton(
+                            //   icon: const Icon(
+                            //     Icons.notification_add,
+                            //     size: 16,
+                            //     color: Colors.grey,
+                            //   ),
+                            //   onPressed: () {
+                            //     context.read<PrayerTimeBloc>().add(
+                            //       TestNotification(),
+                            //     );
+                            //     ScaffoldMessenger.of(context).showSnackBar(
+                            //       const SnackBar(
+                            //         content: Text(
+                            //           'Notification scheduled in 10 seconds',
+                            //         ),
+                            //       ),
+                            //     );
+                            //   },
+                            // ),
                           ],
                         ),
                         const SizedBox(height: 4),

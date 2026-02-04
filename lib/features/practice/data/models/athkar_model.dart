@@ -29,21 +29,33 @@ class AthkarCategory {
   final String id;
   final String title;
   final String? timeRange;
+  final String? audio;
+  final String? filename;
   final List<AthkarItem> items;
 
   AthkarCategory({
     required this.id,
     required this.title,
     this.timeRange,
+    this.audio,
+    this.filename,
     required this.items,
   });
 
   factory AthkarCategory.fromJson(Map<String, dynamic> json) {
     return AthkarCategory(
-      id: json['id'] ?? '',
-      title: json['title'] ?? '',
+      id: json['id']?.toString() ?? '',
+      title:
+          json['category'] ??
+          json['title'] ??
+          '', // Handle "category" key from new JSON
       timeRange: json['time_range'],
+      audio: json['audio'],
+      filename: json['filename'],
       items:
+          (json['array'] as List<dynamic>?) // Handle "array" key from new JSON
+              ?.map((e) => AthkarItem.fromJson(e))
+              .toList() ??
           (json['items'] as List<dynamic>?)
               ?.map((e) => AthkarItem.fromJson(e))
               .toList() ??
@@ -57,6 +69,8 @@ class AthkarItem {
   final String? title;
   final String text;
   final int repeat;
+  final String? audio;
+  final String? filename;
   final AthkarSource? source;
   final VirtueNotification? virtueNotification;
 
@@ -65,6 +79,8 @@ class AthkarItem {
     this.title,
     required this.text,
     required this.repeat,
+    this.audio,
+    this.filename,
     this.source,
     this.virtueNotification,
   });
@@ -74,7 +90,12 @@ class AthkarItem {
       id: json['id'] ?? 0,
       title: json['title'],
       text: json['text'] ?? '',
-      repeat: json['repeat'] ?? 1,
+      repeat:
+          json['count'] ??
+          json['repeat'] ??
+          1, // Handle "count" key from new JSON
+      audio: json['audio'],
+      filename: json['filename'],
       source: json['source'] != null
           ? AthkarSource.fromJson(json['source'])
           : null,

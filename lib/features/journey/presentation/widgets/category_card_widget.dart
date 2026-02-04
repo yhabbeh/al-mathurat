@@ -1,8 +1,6 @@
-import 'package:almaathorat/core/util/localization_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/colors.dart';
-import '../../../../core/presentation/widgets/custom_text.dart';
 import '../../../practice/presentation/pages/practice_page.dart';
 import '../../presentation/bloc/journey_bloc.dart';
 
@@ -33,7 +31,8 @@ class CategoryCardWidget extends StatelessWidget {
         await Navigator.push<bool>(
           context,
           MaterialPageRoute(
-            builder: (context) => PracticePage(categoryId: categoryId),
+            builder: (context) =>
+                PracticePage(categoryId: categoryId, title: title),
           ),
         );
 
@@ -43,81 +42,93 @@ class CategoryCardWidget extends StatelessWidget {
         }
       },
       child: Container(
-        margin: const EdgeInsets.only(bottom: 16),
-        padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: AppColors.orangeAction.withValues(alpha: 0.2),
+          ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.02),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+              color: Colors.black.withOpacity(0.15),
+              blurRadius: 15,
+              offset: const Offset(0, 6),
             ),
           ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: iconColor,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  // Soft shadow matching the color
-                  BoxShadow(
-                    color: iconColor.withOpacity(0.4),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: iconColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(icon, color: iconColor, size: 24),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primaryText,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                      height: 1.2,
+                    ),
                   ),
                 ],
               ),
-              child: Icon(icon, color: Colors.white, size: 28),
             ),
-            const SizedBox(height: 16),
-            CustomText(
-              title,
-              styleType: CustomTextStyleType.subHeader,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: AppColors.primaryText,
-            ),
-            const SizedBox(height: 4),
-            CustomText(
-              subtitle,
-              styleType: CustomTextStyleType.caption,
-              color: Colors.grey,
-              fontSize: 14,
-            ),
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CustomText(
-                  itemCount,
-                  styleType: CustomTextStyleType.caption,
-                  color: Colors.grey,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: iconColor.withOpacity(0.05),
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20),
                 ),
-                CustomText(
-                  '${(progress * 100).toInt()}% ${context.tr.completed}',
-                  styleType: CustomTextStyleType.caption,
-                  color: Colors.grey,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: LinearProgressIndicator(
-                value: progress,
-                backgroundColor: Colors.grey.withOpacity(0.1),
-                valueColor: AlwaysStoppedAnimation<Color>(iconColor),
-                minHeight: 6,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(2),
+                      child: LinearProgressIndicator(
+                        value: progress,
+                        backgroundColor: iconColor.withOpacity(0.1),
+                        valueColor: AlwaysStoppedAnimation<Color>(iconColor),
+                        minHeight: 4,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    '${(progress * 100).toInt()}%',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: iconColor,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

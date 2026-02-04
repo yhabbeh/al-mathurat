@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/colors.dart';
-import '../../../../core/presentation/widgets/custom_button.dart';
 import '../../../../core/presentation/widgets/custom_text.dart';
 import '../../../../core/util/localization_extension.dart';
 import '../../../journey/presentation/pages/categories_page.dart';
@@ -18,16 +17,16 @@ class StartJourneyWidget extends StatelessWidget {
         );
       },
       child: Container(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
           color: AppColors.cardSurface,
           borderRadius: BorderRadius.circular(32),
           border: Border.all(color: Colors.white.withOpacity(0.4)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.5),
-              blurRadius: 16,
-              offset: const Offset(0, 8),
+              color: Colors.black.withOpacity(0.25),
+              blurRadius: 5,
+              offset: const Offset(0, 5),
             ),
           ],
         ),
@@ -53,7 +52,7 @@ class StartJourneyWidget extends StatelessWidget {
                 size: 36,
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 15),
             CustomText(
               context.tr.startJourney,
               styleType: CustomTextStyleType.body,
@@ -69,7 +68,7 @@ class StartJourneyWidget extends StatelessWidget {
               textAlign: TextAlign.center,
               fontSize: 14,
             ),
-            const SizedBox(height: 32),
+            // const SizedBox(height: 32),
             // CustomButton(
             //   text: context.tr.exploreCategories,
             //   onPressed: () {

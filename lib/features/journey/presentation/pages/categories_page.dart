@@ -6,6 +6,8 @@ import '../../../../core/util/localization_extension.dart';
 import '../bloc/journey_bloc.dart';
 import '../widgets/category_card_widget.dart';
 import '../widgets/bottom_stats_widget.dart';
+import '../../../practice/presentation/widgets/athkar_search_delegate.dart';
+import '../../../practice/data/repositories/practice_repository.dart';
 
 class CategoriesPage extends StatefulWidget {
   const CategoriesPage({super.key});
@@ -62,6 +64,31 @@ class _CategoriesPageState extends State<CategoriesPage> {
               fontWeight: FontWeight.bold,
             ),
           ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.orange,
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                child: IconButton(
+                  icon: const Icon(Icons.search),
+                  color: Colors.white,
+                  onPressed: () {
+                    showSearch(
+                      context: context,
+                      delegate: AthkarSearchDelegate(
+                        repository: sl<PracticeRepository>(),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
         ),
         body: BlocBuilder<JourneyBloc, JourneyState>(
           builder: (context, state) {
@@ -71,36 +98,60 @@ class _CategoriesPageState extends State<CategoriesPage> {
               return RefreshIndicator(
                 onRefresh: _onRefresh,
                 color: AppColors.purpleIcon,
-                child: ListView(
-                  padding: const EdgeInsets.all(24.0),
-                  children: [
-                    Text(
-                      context.tr.chooseCategory,
-                      style: const TextStyle(color: Colors.grey, fontSize: 16),
-                      textAlign: TextAlign.center,
-                    ),
-                    BottomStatsWidget(
-                      streakDays: state.streakDays,
-                      completedSessions: state.completedSessions,
-                      activityMinutes: state.activityMinutes,
-                    ),
-                    const SizedBox(height: 32),
-                    // Map categories
-                    ...state.categories.map(
-                      (cat) => CategoryCardWidget(
-                        categoryId: cat.id,
-                        title: cat.title,
-                        subtitle: cat.subtitle,
-                        itemCount: cat.itemCount,
-                        progress: cat.progress,
-                        iconColor: Color(cat.colorValue),
-                        icon: IconData(
-                          cat.iconCodePoint,
-                          fontFamily: 'MaterialIcons',
+                child: CustomScrollView(
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.all(24.0),
+                        child: Column(
+                          children: [
+                            // Text(
+                            //   context.tr.chooseCategory,
+                            //   style: const TextStyle(
+                            //     color: Colors.grey,
+                            //     fontSize: 16,
+                            //   ),
+                            //   textAlign: TextAlign.center,
+                            // ),
+                            // const SizedBox(height: 10),
+                            BottomStatsWidget(
+                              streakDays: state.streakDays,
+                              completedSessions: state.completedSessions,
+                              activityMinutes: state.activityMinutes,
+                            ),
+                            // const SizedBox(height: 32),
+                          ],
                         ),
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      sliver: SliverGrid(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 0.90,
+                              crossAxisSpacing: 16,
+                              mainAxisSpacing: 16,
+                            ),
+                        delegate: SliverChildBuilderDelegate((context, index) {
+                          final cat = state.categories[index];
+                          return CategoryCardWidget(
+                            categoryId: cat.id,
+                            title: cat.title,
+                            subtitle: cat.subtitle,
+                            itemCount: cat.itemCount,
+                            progress: cat.progress,
+                            iconColor: Color(cat.colorValue),
+                            icon: IconData(
+                              cat.iconCodePoint,
+                              fontFamily: 'MaterialIcons',
+                            ),
+                          );
+                        }, childCount: state.categories.length),
+                      ),
+                    ),
+                    const SliverToBoxAdapter(child: SizedBox(height: 24)),
                   ],
                 ),
               );

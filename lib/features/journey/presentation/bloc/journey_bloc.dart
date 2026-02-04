@@ -30,17 +30,23 @@ class JourneyBloc extends Bloc<JourneyEvent, JourneyState> {
 
       // Load athkar data from JSON
       final jsonString = await rootBundle.loadString(
-        'assets/bundle/athkar.json',
+        'assets/bundle/athkar/Adhkar-json/adhkar.json',
       );
-      final jsonMap = json.decode(jsonString) as Map<String, dynamic>;
-      final categoriesJson = jsonMap['categories'] as List<dynamic>;
+      final jsonResponse = json.decode(jsonString);
+      final List<dynamic> categoriesJson = jsonResponse is List
+          ? jsonResponse
+          : (jsonResponse['categories'] as List<dynamic>);
 
       final List<CategoryModel> categories = [];
 
       for (final categoryJson in categoriesJson) {
-        final id = categoryJson['id'] as String;
-        final title = categoryJson['title'] as String;
-        final items = categoryJson['items'] as List<dynamic>;
+        final id = categoryJson['id']?.toString() ?? '';
+        final title =
+            categoryJson['category'] as String? ??
+            categoryJson['title'] as String? ??
+            '';
+        final items =
+            (categoryJson['array'] ?? categoryJson['items']) as List<dynamic>;
         final itemCount = items.length;
 
         // Get category-specific styling
@@ -52,11 +58,16 @@ class JourneyBloc extends Bloc<JourneyEvent, JourneyState> {
 
         if (todayProgress != null && itemCount > 0) {
           // Calculate progress based on current item index and count
-          final completedItems = todayProgress.currentItemIndex;
-          final currentItemProgress =
-              todayProgress.currentCount /
-              (items[todayProgress.currentItemIndex]['repeat'] as int? ?? 1);
-          progressValue = (completedItems + currentItemProgress) / itemCount;
+          final currentIdx = todayProgress.currentItemIndex;
+          if (currentIdx < items.length) {
+            final item = items[currentIdx];
+            final repeat = item['count'] as int? ?? item['repeat'] as int? ?? 1;
+
+            final currentItemProgress = todayProgress.currentCount / repeat;
+            progressValue = (currentIdx + currentItemProgress) / itemCount;
+          } else {
+            progressValue = 1.0;
+          }
 
           // If category was fully completed today
           if (todayProgress.completionsCount > 0) {
@@ -93,9 +104,10 @@ class JourneyBloc extends Bloc<JourneyEvent, JourneyState> {
   /// Returns styling (subtitle, color, icon) based on category ID
   _CategoryStyling _getCategoryStyling(String categoryId) {
     switch (categoryId) {
+      case '1': // Morning & Evening
       case 'morning':
         return _CategoryStyling(
-          subtitle: 'ابدأ يومك ببركة',
+          subtitle: 'ابدأ أو اختم يومك بذكر',
           colorValue: 0xFFF59E0B, // orange
           iconCodePoint: Icons.wb_sunny_outlined.codePoint,
         );
@@ -111,12 +123,14 @@ class JourneyBloc extends Bloc<JourneyEvent, JourneyState> {
           colorValue: 0xFF10B981, // green
           iconCodePoint: Icons.check_circle_outline.codePoint,
         );
+      case '2': // Sleep
       case 'sleep':
         return _CategoryStyling(
           subtitle: 'نم على ذكر الله',
           colorValue: 0xFF3B82F6, // blue
           iconCodePoint: Icons.bedtime_outlined.codePoint,
         );
+      case '3': // Wake up
       case 'wake_up':
         return _CategoryStyling(
           subtitle: 'استيقظ بحمد الله',

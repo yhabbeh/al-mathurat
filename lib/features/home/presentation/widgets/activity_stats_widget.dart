@@ -17,15 +17,15 @@ class ActivityStatsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(
-          child: _buildStatCard(
-            'الدقائق',
-            '$activityMinutes',
-            Icons.timer_outlined,
-            Colors.blue,
-          ),
-        ),
-        const SizedBox(width: 16),
+        // Expanded(
+        //   child: _buildStatCard(
+        //     'الدقائق',
+        //     '$activityMinutes',
+        //     Icons.timer_outlined,
+        //     Colors.blue,
+        //   ),
+        // ),
+        // const SizedBox(width: 16),
         Expanded(
           child: _buildStatCard(
             'المكتملة',
@@ -60,10 +60,11 @@ class ActivityStatsWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.grey.withOpacity(0.1)),
       ),
-      child: Column(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Icon(icon, color: color, size: 28),
-          const SizedBox(height: 8),
+
           Text(
             value,
             style: const TextStyle(
@@ -72,7 +73,6 @@ class ActivityStatsWidget extends StatelessWidget {
               color: AppColors.primaryText,
             ),
           ),
-          const SizedBox(height: 4),
           Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
         ],
       ),

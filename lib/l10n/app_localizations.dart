@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// No description provided for @startJourney.
   ///
   /// In en, this message translates to:
-  /// **'Start Spiritual Journey'**
+  /// **'Start Your Faith Journey'**
   String get startJourney;
 
   /// No description provided for @exploreCategories.
@@ -119,7 +119,7 @@ abstract class AppLocalizations {
   /// No description provided for @findPeace.
   ///
   /// In en, this message translates to:
-  /// **'Find peace and tranquility through daily dhikr, prayers, and spiritual practices.'**
+  /// **'Find peace and tranquility through daily remembrance, supplications, and Islamic practices.'**
   String get findPeace;
 
   /// No description provided for @greeting.

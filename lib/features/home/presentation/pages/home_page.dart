@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/theme/colors.dart';
 import '../../../../core/di/injection_container.dart';
 import '../../../journey/presentation/bloc/journey_bloc.dart';
 import '../bloc/home_bloc.dart';
@@ -22,36 +21,36 @@ class HomePage extends StatelessWidget {
         BlocProvider(create: (_) => sl<JourneyBloc>()..add(LoadJourneyData())),
       ],
       child: Scaffold(
-        body: Container(
-          decoration: const BoxDecoration(
-            gradient: AppColors.backgroundGradient,
-          ),
-          child: SafeArea(
-            child: Builder(
-              builder: (context) {
-                return RefreshIndicator(
-                  onRefresh: () async {
-                    // Refresh both blocs
+        backgroundColor: const Color.fromARGB(255, 255, 244, 232),
+        body: SafeArea(
+          child: Builder(
+            builder: (context) {
+              return RefreshIndicator(
+                onRefresh: () async {
+                  // Refresh both blocs
 
-                    context.read<HomeBloc>().add(LoadHomeData());
-                    context.read<JourneyBloc>().add(LoadJourneyData());
-                  },
-                  child: SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: BlocBuilder<HomeBloc, HomeState>(
-                        builder: (context, state) {
-                          if (state.status == HomeStatus.error) {
-                            return Center(child: Text(state.errorMessage));
-                          }
+                  context.read<HomeBloc>().add(LoadHomeData());
+                  context.read<JourneyBloc>().add(LoadJourneyData());
+                },
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: BlocBuilder<HomeBloc, HomeState>(
+                      builder: (context, state) {
+                        if (state.status == HomeStatus.error) {
+                          return Center(child: Text(state.errorMessage));
+                        }
 
-                          return Skeletonizer(
-                            enabled: state.status == HomeStatus.loading,
+                        return Skeletonizer(
+                          enabled: state.status == HomeStatus.loading,
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * 0.9,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                const SizedBox(height: 25),
+                                // const SizedBox(height: 25),
                                 QuoteCardWidget(
                                   quote: state.quote,
                                   surahName: state.surahName,
@@ -69,28 +68,27 @@ class HomePage extends StatelessWidget {
                                     }
                                   },
                                 ),
-                                const SizedBox(height: 25),
+                                // const SizedBox(height: 35),
                                 const StartJourneyWidget(),
-                                const SizedBox(height: 25),
+                                // const SizedBox(height: 35),
                                 const PrayerTimesWidget(),
-                                const SizedBox(height: 24),
+                                // const SizedBox(height: 35),
                                 ActivityStatsWidget(
                                   streakDays: state.streakDays,
                                   completedActivities:
                                       state.completedActivities,
                                   activityMinutes: state.activityMinutes,
                                 ),
-                                const SizedBox(height: 24),
                               ],
                             ),
-                          );
-                        },
-                      ),
+                          ),
+                        );
+                      },
                     ),
                   ),
-                );
-              },
-            ),
+                ),
+              );
+            },
           ),
         ),
       ),

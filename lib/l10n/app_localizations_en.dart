@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get startJourney => 'Start Spiritual Journey';
+  String get startJourney => 'Start Your Faith Journey';
 
   @override
   String get exploreCategories => 'Explore Categories';
@@ -19,7 +19,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get findPeace =>
-      'Find peace and tranquility through daily dhikr, prayers, and spiritual practices.';
+      'Find peace and tranquility through daily remembrance, supplications, and Islamic practices.';
 
   @override
   String get greeting => 'Good Evening';

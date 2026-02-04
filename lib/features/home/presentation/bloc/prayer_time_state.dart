@@ -15,15 +15,22 @@ class PrayerTimeLoaded extends PrayerTimeState {
   final String nextPrayerName;
   final String nextPrayerTime;
   final Duration timeRemaining;
+  final int? scheduledNotificationsCount;
 
   const PrayerTimeLoaded({
     required this.nextPrayerName,
     required this.nextPrayerTime,
     required this.timeRemaining,
+    this.scheduledNotificationsCount,
   });
 
   @override
-  List<Object> get props => [nextPrayerName, nextPrayerTime, timeRemaining];
+  List<Object> get props => [
+    nextPrayerName,
+    nextPrayerTime,
+    timeRemaining,
+    scheduledNotificationsCount ?? 0,
+  ];
 }
 
 class PrayerTimeLocationPermissionRequired extends PrayerTimeState {}

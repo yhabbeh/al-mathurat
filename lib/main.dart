@@ -7,12 +7,18 @@ import 'core/util/app_bloc_observer.dart';
 import 'features/home/presentation/bloc/prayer_time_bloc.dart' as core;
 import 'features/home/presentation/pages/flash_screen.dart';
 import 'l10n/app_localizations.dart';
+import 'core/services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = MyBlocObserver();
 
   await di.init();
+
+  final notificationService = NotificationService();
+  await notificationService.init();
+  await notificationService.requestPermissions();
+
   runApp(const MyApp());
 }
 

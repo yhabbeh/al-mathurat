@@ -1,8 +1,13 @@
+import 'dart:developer';
+
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:geocoding/geocoding.dart';
 import '../../../../core/services/location_service.dart';
 import '../../../../core/services/ip_location_service.dart';
+
+import '../../../../core/services/notification_service.dart';
 import '../../data/repositories/prayer_time_repository.dart';
 
 part 'prayer_time_event.dart';
@@ -13,6 +18,12 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
   final LocationService locationService;
   final IpLocationService ipLocationService;
 
+  // Cache last used location/settings for scheduling
+  double? _lastLat;
+  double? _lastLong;
+  int? _lastMethod;
+  int? _lastSchool; // Default 0
+
   PrayerTimeBloc({
     required this.repository,
     required this.locationService,
@@ -21,6 +32,8 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
     on<LoadPrayerTimes>(_onLoadPrayerTimes);
     on<RequestLocation>(_onRequestLocation);
     on<UpdatePrayerSettings>(_onUpdatePrayerSettings);
+    on<ScheduleWeeklyNotifications>(_onScheduleWeeklyNotifications);
+    on<TestNotification>(_onTestNotification);
   }
 
   Future<void> _onLoadPrayerTimes(
@@ -101,10 +114,118 @@ class PrayerTimeBloc extends Bloc<PrayerTimeEvent, PrayerTimeState> {
         // Repo defaults to 0 if not set.
       );
 
+      // Save for scheduling
+      _lastLat = lat;
+      _lastLong = long;
+      _lastMethod = method;
+      // school is default 0 unless we fetch it from repo, but repo handles null.
+
       _emitLoadedState(emit, timings);
+
+      // Trigger scheduling
+      add(const ScheduleWeeklyNotifications());
     } catch (e) {
       // If everything fails (network for API), return error
       emit(PrayerTimeError(e.toString()));
+    }
+  }
+
+  Future<void> _onScheduleWeeklyNotifications(
+    ScheduleWeeklyNotifications event,
+    Emitter<PrayerTimeState> emit,
+  ) async {
+    // Only proceed if we have valid location data
+    if (_lastLat == null || _lastLong == null) return;
+    log('Scheduling prayer notifications for next 7 days...');
+
+    try {
+      await NotificationService().cancelAllNotifications();
+
+      // Schedule for next 7 days
+      final now = DateTime.now();
+      int scheduledCount = 0;
+
+      for (int i = 0; i < 7; i++) {
+        final date = now.add(Duration(days: i));
+
+        final timings = await repository.getPrayerTimes(
+          lat: _lastLat,
+          long: _lastLong,
+          method: _lastMethod,
+          school: _lastSchool,
+          date: date,
+        );
+
+        final prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+        for (int pIndex = 0; pIndex < prayers.length; pIndex++) {
+          final pName = prayers[pIndex];
+          final timeStr = timings[pName]; // "HH:mm" or "HH:mm (TZ)"
+          if (timeStr == null) continue;
+
+          // Handle time with timezone suffix like "05:30 (+03)"
+          final cleanTime = timeStr.split(' ')[0];
+          final parts = cleanTime.split(':');
+          final hour = int.parse(parts[0]);
+          final minute = int.parse(parts[1]);
+
+          final scheduleTime = DateTime(
+            date.year,
+            date.month,
+            date.day,
+            hour,
+            minute,
+          );
+
+          // ID scheme: dayOffset * 10 + prayerIndex (0-4)
+          final id = i * 10 + pIndex;
+
+          await NotificationService().schedulePrayerNotification(
+            id: id,
+            title: 'حان وقت صلاة $pName',
+            body: 'حان الآن وقت صلاة $pName',
+            scheduledTime: scheduleTime,
+          );
+          scheduledCount++;
+        }
+      }
+      debugPrint('Scheduled $scheduledCount prayer notifications');
+
+      // Emit state with scheduled count so UI can show toast
+      final currentState = state;
+      if (currentState is PrayerTimeLoaded) {
+        emit(
+          PrayerTimeLoaded(
+            nextPrayerName: currentState.nextPrayerName,
+            nextPrayerTime: currentState.nextPrayerTime,
+            timeRemaining: currentState.timeRemaining,
+            scheduledNotificationsCount: scheduledCount,
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint('Error scheduling notifications: $e');
+    }
+  }
+
+  Future<void> _onTestNotification(
+    TestNotification event,
+    Emitter<PrayerTimeState> emit,
+  ) async {
+    try {
+      // Test scheduled notification - 10 seconds in the future
+      final now = DateTime.now();
+      final scheduledTime = now.add(const Duration(seconds: 10));
+      debugPrint('Current time: $now');
+      debugPrint('Scheduled time: $scheduledTime');
+      await NotificationService().schedulePrayerNotification(
+        id: 12999, // Special ID for testing
+        title: 'Scheduled Test Notification',
+        body: 'This notification was scheduled!',
+        scheduledTime: scheduledTime,
+      );
+      debugPrint('Notification scheduled successfully');
+    } catch (e) {
+      debugPrint('Error testing notification: $e');
     }
   }
 

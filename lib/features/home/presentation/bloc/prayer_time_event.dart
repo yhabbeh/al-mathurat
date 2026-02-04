@@ -29,3 +29,10 @@ class UpdatePrayerSettings extends PrayerTimeEvent {
   @override
   List<Object> get props => [calculationMethod, juristicMethod];
 }
+
+class ScheduleWeeklyNotifications extends PrayerTimeEvent {
+  final Map<String, dynamic>? todayTimings;
+  const ScheduleWeeklyNotifications({this.todayTimings});
+}
+
+class TestNotification extends PrayerTimeEvent {}

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
@@ -65,9 +66,15 @@ class PrayerTimeRepository {
     double? long,
     int? method,
     int? school,
+    DateTime? date,
   }) async {
     final prefs = await SharedPreferences.getInstance();
-    final today = DateFormat('dd-MM-yyyy').format(DateTime.now());
+    final today = DateTime.now();
+    final targetDate = date ?? today;
+
+    final todayStr = DateFormat('dd-MM-yyyy').format(today);
+    final targetDateStr = DateFormat('dd-MM-yyyy').format(targetDate);
+    final isToday = todayStr == targetDateStr;
 
     // If method/school provided (e.g. from auto-detect), use it.
     // Otherwise fallback to stored preferences.
@@ -75,34 +82,31 @@ class PrayerTimeRepository {
     final usedSchool = school ?? await getJuristicMethod();
 
     // Check cache first (simple cache invalidation by date)
-    // NOTE: If location changes significantly, we might want to invalidate cache.
-    // For MVP, we'll assume daily fetch is enough or we can add location awareness to cache key.
-
-    // We include settings in cache key or fallback to date check logic
-    // Ideally user change forces reload which bypasses cache or updates it.
-    // For now we rely on explicit reload calls.
+    // Only check cache if requesting for today
     final cacheKeyCombined = '${_cacheKey}_${usedMethod}_$usedSchool';
 
-    final cachedDate = prefs.getString(_cacheDateKey);
-    final cachedData = prefs.getString(cacheKeyCombined);
+    if (isToday) {
+      final cachedDate = prefs.getString(_cacheDateKey);
+      final cachedData = prefs.getString(cacheKeyCombined);
 
-    if (cachedDate == today && cachedData != null) {
-      try {
-        return json.decode(cachedData) as Map<String, dynamic>;
-      } catch (e) {
-        // Cache corrupted
+      if (cachedDate == todayStr && cachedData != null) {
+        try {
+          return json.decode(cachedData) as Map<String, dynamic>;
+        } catch (e) {
+          // Cache corrupted
+        }
       }
     }
 
     Uri url;
     if (lat != null && long != null) {
       url = Uri.parse(
-        '$_baseUrlCoords/$today?latitude=$lat&longitude=$long&method=$usedMethod&school=$usedSchool',
+        '$_baseUrlCoords/$targetDateStr?latitude=$lat&longitude=$long&method=$usedMethod&school=$usedSchool',
       );
     } else {
       // Default fallback
       url = Uri.parse(
-        '$_baseUrlCity/$today?city=Mecca&country=Saudi Arabia&method=$usedMethod&school=$usedSchool',
+        '$_baseUrlCity/$targetDateStr?city=Mecca&country=Saudi Arabia&method=$usedMethod&school=$usedSchool',
       );
     }
 
@@ -113,9 +117,11 @@ class PrayerTimeRepository {
         final data = json.decode(response.body);
         final timings = data['data']['timings'];
 
-        // Cache data using combined key
-        await prefs.setString(_cacheDateKey, today);
-        await prefs.setString(cacheKeyCombined, json.encode(timings));
+        // Cache data only if it is for today
+        if (isToday) {
+          await prefs.setString(_cacheDateKey, todayStr);
+          await prefs.setString(cacheKeyCombined, json.encode(timings));
+        }
 
         return timings;
       } else {

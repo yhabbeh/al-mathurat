@@ -23,9 +23,10 @@ class PrayerTimesWidget extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
+                textAlign: TextAlign.center,
                 'تم جدولة ${state.scheduledNotificationsCount} إشعار للصلوات القادمة',
               ),
-              backgroundColor: const Color(0xFF9333EA),
+              backgroundColor: Colors.orange,
               duration: const Duration(seconds: 3),
             ),
           );
@@ -59,12 +60,12 @@ class PrayerTimesWidget extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF3E8FF),
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: const Icon(
                         Icons.access_time,
-                        color: Color(0xFF9333EA),
+                        color: Colors.orange,
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -128,7 +129,7 @@ class PrayerTimesWidget extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF9333EA),
+                      color: Colors.orange,
                     ),
                   ),
                 ),
